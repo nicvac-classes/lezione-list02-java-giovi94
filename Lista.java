@@ -1,18 +1,9 @@
-import java.util.NoSuchElementException;
+class Lista<T> {
 
-public class Lista<T> {
     private Nodo<T> head;
-
-    public Lista() {
-        head = null;
-    }
 
     public boolean isEmpty() {
         return head == null;
-    }
-
-    public void clear() {
-        head = null;
     }
 
     public void aggiungiInTesta(T dato) {
@@ -20,95 +11,92 @@ public class Lista<T> {
     }
 
     public void aggiungiInCoda(T dato) {
-        Nodo<T> nuovo = new Nodo<>(dato);
-
-        if (isEmpty()) {
-            head = nuovo;
+        if (head == null) {
+            head = new Nodo<>(dato, null);
             return;
         }
-
-        Nodo<T> corrente = head;
-        while (corrente.next != null) {
-            corrente = corrente.next;
-        }
-        corrente.next = nuovo;
+        Nodo<T> curr = head;
+        while (curr.next != null) curr = curr.next;
+        curr.next = new Nodo<>(dato, null);
     }
 
-    public T leggiTesta() {
-        if (isEmpty()) {
-            throw new NoSuchElementException("Lista vuota");
+    public void aggiungiInPosizione(T dato, int pos) {
+        if (pos == 0) {
+            aggiungiInTesta(dato);
+            return;
         }
-        return head.dato;
-    }
+        Nodo<T> curr = head;
+        for (int i = 0; curr != null && i < pos - 1; i++)
+            curr = curr.next;
 
-    public T leggiCoda() {
-        if (isEmpty()) {
-            throw new NoSuchElementException("Lista vuota");
-        }
-
-        Nodo<T> corrente = head;
-        while (corrente.next != null) {
-            corrente = corrente.next;
-        }
-        return corrente.dato;
+        if (curr == null) throw new IndexOutOfBoundsException();
+        curr.next = new Nodo<>(dato, curr.next);
     }
 
     public int size() {
         int count = 0;
-        for (Nodo<T> c = head; c != null; c = c.next) {
+        for (Nodo<T> curr = head; curr != null; curr = curr.next)
             count++;
-        }
         return count;
-    }
-
-    public boolean contiene(T dato) {
-        for (Nodo<T> c = head; c != null; c = c.next) {
-            if (dato == null ? c.dato == null : dato.equals(c.dato)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     public int indiceDi(T dato) {
         int i = 0;
-        for (Nodo<T> c = head; c != null; c = c.next, i++) {
-            if (dato == null ? c.dato == null : dato.equals(c.dato)) {
-                return i;
-            }
-        }
+        for (Nodo<T> curr = head; curr != null; curr = curr.next, i++)
+            if (curr.dato.equals(dato)) return i;
         return -1;
     }
 
     public boolean cancella(T dato) {
-        if (isEmpty()) return false;
-
-        if (dato == null ? head.dato == null : dato.equals(head.dato)) {
+        if (head == null) return false;
+        if (head.dato.equals(dato)) {
             head = head.next;
             return true;
         }
-
-        Nodo<T> prev = head;
-        Nodo<T> curr = head.next;
-
-        while (curr != null) {
-            if (dato == null ? curr.dato == null : dato.equals(curr.dato)) {
-                prev.next = curr.next;
+        Nodo<T> curr = head;
+        while (curr.next != null) {
+            if (curr.next.dato.equals(dato)) {
+                curr.next = curr.next.next;
                 return true;
             }
-            prev = curr;
             curr = curr.next;
         }
         return false;
     }
 
+    public T cancellaInPosizione(int pos) {
+        if (head == null) throw new IndexOutOfBoundsException();
+        if (pos == 0) {
+            T dato = head.dato;
+            head = head.next;
+            return dato;
+        }
+        Nodo<T> curr = head;
+        for (int i = 0; curr.next != null && i < pos - 1; i++)
+            curr = curr.next;
+
+        if (curr.next == null) throw new IndexOutOfBoundsException();
+        T dato = curr.next.dato;
+        curr.next = curr.next.next;
+        return dato;
+    }
+
+    public void concatena(Lista<T> altra) {
+        if (altra == null || altra.head == null) return;
+        if (head == null) {
+            head = altra.head;
+            return;
+        }
+        Nodo<T> curr = head;
+        while (curr.next != null) curr = curr.next;
+        curr.next = altra.head;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        for (Nodo<T> c = head; c != null; c = c.next) {
-            sb.append(c.dato).append(" -> ");
-        }
-        sb.append("NULL");
-        return sb.toString();
+        for (Nodo<T> curr = head; curr != null; curr = curr.next)
+            sb.append(curr.dato).append(" -> ");
+        return sb.append("NULL").toString();
     }
 }

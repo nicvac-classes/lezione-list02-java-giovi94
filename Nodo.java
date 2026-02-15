@@ -1,9 +1,9 @@
-public class Nodo<T> {
+class Nodo<T> {
     T dato;
     Nodo<T> next;
 
-    public Nodo(T dato) {
+    Nodo(T dato, Nodo<T> next) {
         this.dato = dato;
-        this.next = null;
+        this.next = next;
     }
 }
