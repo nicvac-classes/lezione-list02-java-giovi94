@@ -91,12 +91,36 @@ class Lista<T> {
         while (curr.next != null) curr = curr.next;
         curr.next = altra.head;
     }
-
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        for (Nodo<T> curr = head; curr != null; curr = curr.next)
-            sb.append(curr.dato).append(" -> ");
-        return sb.append("NULL").toString();
+    public void concatena(Lista<T> altraLista) {
+    if (altraLista == null || altraLista.head == null) {
+        return;
     }
+    
+    if (head == null) {
+        head = altraLista.head;
+        return;
+    }
+    
+    Nodo<T> corrente = head;
+    while (corrente.next != null) {
+        corrente = corrente.next;
+    }
+    corrente.next = altraLista.head;
 }
+
+public String toString() {
+    StringBuilder sb = new StringBuilder();
+    Nodo<T> corrente = head;
+    
+    while (corrente != null) {
+        sb.append(corrente.dato);
+        sb.append(" -> ");
+        corrente = corrente.next;
+    }
+    sb.append("NULL");
+    
+    return sb.toString();
+}
+
+
+   
